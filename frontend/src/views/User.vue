@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { getUserList } from '../api'
 
 const loading = ref(false)
 const tableData = ref([])
@@ -17,12 +18,13 @@ const pagination = ref({
 const fetchData = async () => {
   loading.value = true
   try {
-    // 模拟数据
-    tableData.value = [
-      { id: 1, username: 'admin', nickname: '管理员', phone: '13800138000', status: 1, createTime: '2024-01-01 00:00:00' },
-      { id: 2, username: 'user1', nickname: '测试用户', phone: '13800138001', status: 1, createTime: '2024-01-02 00:00:00' }
-    ]
-    pagination.value.total = 2
+    const res = await getUserList({
+      ...searchForm.value,
+      page: pagination.value.current,
+      size: pagination.value.pageSize
+    })
+    tableData.value = res.data.records
+    pagination.value.total = res.data.total
   } catch (error) {
     console.error(error)
   } finally {
@@ -40,16 +42,25 @@ const handleReset = () => {
   handleSearch()
 }
 
-const handleAdd = () => {
-  ElMessage.info('添加用户功能开发中')
-}
-
-const handleEdit = (row) => {
-  ElMessage.info(`编辑用户: ${row.username}`)
-}
-
 const handleDelete = (row) => {
-  ElMessage.info(`删除用户: ${row.username}`)
+  ElMessageBox.confirm(`确定要删除用户 ${row.username} 吗？`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    ElMessage.success('删除成功')
+    fetchData()
+  })
+}
+
+const handleSizeChange = (val) => {
+  pagination.value.pageSize = val
+  fetchData()
+}
+
+const handleCurrentChange = (val) => {
+  pagination.value.current = val
+  fetchData()
 }
 
 onMounted(() => {
@@ -78,12 +89,7 @@ onMounted(() => {
 
     <el-card class="table-card">
       <template #header>
-        <div class="card-header">
-          <span>用户列表</span>
-          <el-button type="primary" @click="handleAdd">
-            <el-icon><Plus /></el-icon> 添加用户
-          </el-button>
-        </div>
+        <span>用户列表</span>
       </template>
       
       <el-table :data="tableData" v-loading="loading" border stripe>
@@ -99,9 +105,8 @@ onMounted(() => {
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" width="180" />
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="120" fixed="right">
           <template #default="{ row }">
-            <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
             <el-button type="danger" link @click="handleDelete(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -114,6 +119,8 @@ onMounted(() => {
         :page-sizes="[10, 20, 50]"
         :total="pagination.total"
         layout="total, sizes, prev, pager, next"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
       />
     </el-card>
   </div>
@@ -127,12 +134,6 @@ onMounted(() => {
 
 .search-card {
   margin-bottom: 20px;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .pagination {

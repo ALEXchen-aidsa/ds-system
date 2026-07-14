@@ -10,9 +10,9 @@ export function register(data) {
   return request.post('/auth/register', data)
 }
 
-// 获取用户信息
-export function getUserInfo() {
-  return request.get('/user/info')
+// 获取用户列表
+export function getUserList(params) {
+  return request.get('/user/list', { params })
 }
 
 // 获取商品列表
@@ -23,6 +23,21 @@ export function getProductList(params) {
 // 获取商品详情
 export function getProductDetail(id) {
   return request.get(`/product/${id}`)
+}
+
+// 创建商品
+export function createProduct(data) {
+  return request.post('/product', data)
+}
+
+// 更新商品
+export function updateProduct(data) {
+  return request.put('/product', data)
+}
+
+// 删除商品
+export function deleteProduct(id) {
+  return request.delete(`/product/${id}`)
 }
 
 // 创建订单
