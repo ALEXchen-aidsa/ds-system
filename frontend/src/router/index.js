@@ -24,6 +24,12 @@ const routes = [
         meta: { title: '首页' }
       },
       {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('../views/Dashboard.vue'),
+        meta: { title: '数据大屏' }
+      },
+      {
         path: 'warehouse',
         name: 'Warehouse',
         component: () => import('../views/Warehouse.vue'),
