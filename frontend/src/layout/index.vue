@@ -12,6 +12,8 @@ const menuItems = [
   { path: '/warehouse', icon: 'House', title: '仓库管理' },
   { path: '/inventory', icon: 'Box', title: '库存管理' },
   { path: '/product', icon: 'ShoppingCart', title: '商品管理' },
+  { path: '/supplier', icon: 'Van', title: '供应商' },
+  { path: '/customer', icon: 'UserFilled', title: '客户管理' },
   { path: '/order', icon: 'Document', title: '订单管理' },
   { path: '/seckill', icon: 'Timer', title: '秒杀活动' },
   { path: '/user', icon: 'User', title: '用户管理' }

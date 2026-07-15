@@ -42,6 +42,18 @@ const routes = [
         meta: { title: '商品管理' }
       },
       {
+        path: 'supplier',
+        name: 'Supplier',
+        component: () => import('../views/Supplier.vue'),
+        meta: { title: '供应商管理' }
+      },
+      {
+        path: 'customer',
+        name: 'Customer',
+        component: () => import('../views/Customer.vue'),
+        meta: { title: '客户管理' }
+      },
+      {
         path: 'order',
         name: 'Order',
         component: () => import('../views/Order.vue'),

@@ -1,0 +1,36 @@
+-- 供应商表
+CREATE TABLE IF NOT EXISTS supplier (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    code VARCHAR(50) UNIQUE NOT NULL,
+    contact VARCHAR(50),
+    phone VARCHAR(20),
+    address VARCHAR(200),
+    status TINYINT DEFAULT 1,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 客户表
+CREATE TABLE IF NOT EXISTS customer (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    code VARCHAR(50) UNIQUE NOT NULL,
+    phone VARCHAR(20),
+    address VARCHAR(200),
+    type TINYINT DEFAULT 1 COMMENT '1电商 2线下',
+    status TINYINT DEFAULT 1,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 采购单表
+CREATE TABLE IF NOT EXISTS purchase_order (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    order_no VARCHAR(50) UNIQUE NOT NULL,
+    supplier_id BIGINT NOT NULL,
+    total_amount DECIMAL(10,2) DEFAULT 0,
+    status TINYINT DEFAULT 0 COMMENT '0待审核 1已审核 2已完成',
+    operator_id BIGINT,
+    remark VARCHAR(500),
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    finish_time DATETIME
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
