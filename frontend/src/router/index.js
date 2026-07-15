@@ -36,6 +36,12 @@ const routes = [
         meta: { title: '订单管理' }
       },
       {
+        path: 'seckill',
+        name: 'Seckill',
+        component: () => import('../views/Seckill.vue'),
+        meta: { title: '秒杀活动' }
+      },
+      {
         path: 'user',
         name: 'User',
         component: () => import('../views/User.vue'),
