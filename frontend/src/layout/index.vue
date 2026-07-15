@@ -9,6 +9,8 @@ const username = computed(() => localStorage.getItem('username') || '用户')
 
 const menuItems = [
   { path: '/home', icon: 'HomeFilled', title: '首页' },
+  { path: '/warehouse', icon: 'House', title: '仓库管理' },
+  { path: '/inventory', icon: 'Box', title: '库存管理' },
   { path: '/product', icon: 'ShoppingCart', title: '商品管理' },
   { path: '/order', icon: 'Document', title: '订单管理' },
   { path: '/seckill', icon: 'Timer', title: '秒杀活动' },

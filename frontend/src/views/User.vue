@@ -47,9 +47,24 @@ const handleDelete = (row) => {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
-  }).then(() => {
-    ElMessage.success('删除成功')
-    fetchData()
+  }).then(async () => {
+    try {
+      const res = await fetch(`/api/user/${row.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      if (res.ok) {
+        ElMessage.success('删除成功')
+        fetchData()
+      } else {
+        ElMessage.error('删除失败')
+      }
+    } catch (error) {
+      console.error(error)
+      ElMessage.error('删除失败')
+    }
   })
 }
 

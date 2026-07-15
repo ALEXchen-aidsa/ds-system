@@ -24,6 +24,18 @@ const routes = [
         meta: { title: '首页' }
       },
       {
+        path: 'warehouse',
+        name: 'Warehouse',
+        component: () => import('../views/Warehouse.vue'),
+        meta: { title: '仓库管理' }
+      },
+      {
+        path: 'inventory',
+        name: 'Inventory',
+        component: () => import('../views/Inventory.vue'),
+        meta: { title: '库存管理' }
+      },
+      {
         path: 'product',
         name: 'Product',
         component: () => import('../views/Product.vue'),
@@ -56,7 +68,6 @@ const router = createRouter({
   routes
 })
 
-// 路由守卫
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   if (to.path !== '/login' && to.path !== '/register' && !token) {

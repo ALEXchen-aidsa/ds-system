@@ -58,10 +58,6 @@ const handleReset = () => {
   handleSearch()
 }
 
-const handleDetail = (row) => {
-  ElMessage.info(`查看订单: ${row.orderNo}`)
-}
-
 const handleSizeChange = (val) => {
   pagination.value.pageSize = val
   fetchData()
@@ -109,7 +105,7 @@ onMounted(() => {
       </template>
       
       <el-table :data="tableData" v-loading="loading" border stripe>
-        <el-table-column prop="orderNo" label="订单号" width="180" />
+        <el-table-column prop="orderNo" label="订单号" width="200" />
         <el-table-column prop="totalAmount" label="订单金额" width="120">
           <template #default="{ row }">
             ¥{{ row.totalAmount }}
@@ -123,10 +119,9 @@ onMounted(() => {
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" width="180" />
-        <el-table-column prop="payTime" label="支付时间" width="180" />
-        <el-table-column label="操作" width="120" fixed="right">
+        <el-table-column prop="payTime" label="支付时间" width="180">
           <template #default="{ row }">
-            <el-button type="primary" link @click="handleDetail(row)">详情</el-button>
+            {{ row.payTime || '未支付' }}
           </template>
         </el-table-column>
       </el-table>

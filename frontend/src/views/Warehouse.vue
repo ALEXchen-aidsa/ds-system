@@ -1,27 +1,21 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getProductList, createProduct, updateProduct, deleteProduct } from '../api'
+import request from '../utils/request'
 
 const loading = ref(false)
 const tableData = ref([])
 const dialogVisible = ref(false)
-const dialogTitle = ref('添加商品')
+const dialogTitle = ref('添加仓库')
 const formLoading = ref(false)
-
-const searchForm = ref({
-  name: '',
-  code: ''
-})
 
 const form = ref({
   id: null,
   name: '',
   code: '',
-  price: '',
-  stock: '',
-  description: '',
-  status: 1
+  address: '',
+  manager: '',
+  capacity: ''
 })
 
 const pagination = ref({
@@ -33,10 +27,11 @@ const pagination = ref({
 const fetchData = async () => {
   loading.value = true
   try {
-    const res = await getProductList({
-      ...searchForm.value,
-      page: pagination.value.current,
-      size: pagination.value.pageSize
+    const res = await request.get('/warehouse/list', {
+      params: {
+        page: pagination.value.current,
+        size: pagination.value.pageSize
+      }
     })
     tableData.value = res.data.records
     pagination.value.total = res.data.total
@@ -47,48 +42,30 @@ const fetchData = async () => {
   }
 }
 
-const handleSearch = () => {
-  pagination.value.current = 1
-  fetchData()
-}
-
-const handleReset = () => {
-  searchForm.value = { name: '', code: '' }
-  handleSearch()
-}
-
 const handleAdd = () => {
-  dialogTitle.value = '添加商品'
-  form.value = {
-    id: null,
-    name: '',
-    code: '',
-    price: '',
-    stock: '',
-    description: '',
-    status: 1
-  }
+  dialogTitle.value = '添加仓库'
+  form.value = { id: null, name: '', code: '', address: '', manager: '', capacity: '' }
   dialogVisible.value = true
 }
 
 const handleEdit = (row) => {
-  dialogTitle.value = '编辑商品'
+  dialogTitle.value = '编辑仓库'
   form.value = { ...row }
   dialogVisible.value = true
 }
 
 const handleSubmit = async () => {
-  if (!form.value.name || !form.value.code || !form.value.price || !form.value.stock) {
+  if (!form.value.name || !form.value.code) {
     ElMessage.warning('请填写完整信息')
     return
   }
   formLoading.value = true
   try {
     if (form.value.id) {
-      await updateProduct(form.value)
+      await request.put('/warehouse', form.value)
       ElMessage.success('更新成功')
     } else {
-      await createProduct(form.value)
+      await request.post('/warehouse', form.value)
       ElMessage.success('添加成功')
     }
     dialogVisible.value = false
@@ -101,13 +78,13 @@ const handleSubmit = async () => {
 }
 
 const handleDelete = (row) => {
-  ElMessageBox.confirm(`确定要删除商品 ${row.name} 吗？`, '提示', {
+  ElMessageBox.confirm(`确定要删除仓库 ${row.name} 吗？`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
     try {
-      await deleteProduct(row.id)
+      await request.delete(`/warehouse/${row.id}`)
       ElMessage.success('删除成功')
       fetchData()
     } catch (error) {
@@ -132,47 +109,29 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="product-container">
-    <h2 class="page-title">商品管理</h2>
+  <div class="warehouse-container">
+    <h2 class="page-title">仓库管理</h2>
     
-    <el-card class="search-card">
-      <el-form :model="searchForm" inline>
-        <el-form-item label="商品名称">
-          <el-input v-model="searchForm.name" placeholder="请输入商品名称" clearable />
-        </el-form-item>
-        <el-form-item label="商品编码">
-          <el-input v-model="searchForm.code" placeholder="请输入商品编码" clearable />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="handleSearch">搜索</el-button>
-          <el-button @click="handleReset">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
-    <el-card class="table-card">
+    <el-card>
       <template #header>
         <div class="card-header">
-          <span>商品列表</span>
+          <span>仓库列表</span>
           <el-button type="primary" @click="handleAdd">
-            <el-icon><Plus /></el-icon> 添加商品
+            <el-icon><Plus /></el-icon> 添加仓库
           </el-button>
         </div>
       </template>
       
       <el-table :data="tableData" v-loading="loading" border stripe>
-        <el-table-column prop="code" label="商品编码" width="120" />
-        <el-table-column prop="name" label="商品名称" min-width="150" />
-        <el-table-column prop="price" label="价格" width="100">
-          <template #default="{ row }">
-            ¥{{ row.price }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="stock" label="库存" width="100" />
+        <el-table-column prop="code" label="仓库编码" width="120" />
+        <el-table-column prop="name" label="仓库名称" min-width="150" />
+        <el-table-column prop="address" label="地址" min-width="200" />
+        <el-table-column prop="manager" label="负责人" width="100" />
+        <el-table-column prop="capacity" label="容量" width="100" />
         <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
             <el-tag :type="row.status === 1 ? 'success' : 'danger'">
-              {{ row.status === 1 ? '上架' : '下架' }}
+              {{ row.status === 1 ? '启用' : '禁用' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -196,26 +155,22 @@ onMounted(() => {
       />
     </el-card>
 
-    <!-- 添加/编辑商品对话框 -->
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="500px">
       <el-form :model="form" label-width="80px">
-        <el-form-item label="商品名称">
-          <el-input v-model="form.name" placeholder="请输入商品名称" />
+        <el-form-item label="仓库名称">
+          <el-input v-model="form.name" placeholder="请输入仓库名称" />
         </el-form-item>
-        <el-form-item label="商品编码">
-          <el-input v-model="form.code" placeholder="请输入商品编码" :disabled="!!form.id" />
+        <el-form-item label="仓库编码">
+          <el-input v-model="form.code" placeholder="请输入仓库编码" :disabled="!!form.id" />
         </el-form-item>
-        <el-form-item label="价格">
-          <el-input v-model="form.price" type="number" placeholder="请输入价格" />
+        <el-form-item label="地址">
+          <el-input v-model="form.address" placeholder="请输入地址" />
         </el-form-item>
-        <el-form-item label="库存">
-          <el-input v-model="form.stock" type="number" placeholder="请输入库存" />
+        <el-form-item label="负责人">
+          <el-input v-model="form.manager" placeholder="请输入负责人" />
         </el-form-item>
-        <el-form-item label="描述">
-          <el-input v-model="form.description" type="textarea" rows="3" placeholder="请输入描述" />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-switch v-model="form.status" :active-value="1" :inactive-value="0" />
+        <el-form-item label="容量">
+          <el-input v-model="form.capacity" type="number" placeholder="请输入容量" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -230,10 +185,6 @@ onMounted(() => {
 .page-title {
   margin-bottom: 20px;
   color: #303133;
-}
-
-.search-card {
-  margin-bottom: 20px;
 }
 
 .card-header {
