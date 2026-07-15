@@ -41,8 +41,8 @@ const handleLogout = () => {
   <el-container class="layout-container">
     <el-aside :width="isCollapse ? '64px' : '220px'" class="aside">
       <div class="logo">
-        <span v-if="!isCollapse">智能仓储系统</span>
-        <span v-else>DS</span>
+        <div class="logo-icon">DS</div>
+        <span v-if="!isCollapse" class="logo-text">智能仓储</span>
       </div>
       <el-menu
         :default-active="router.currentRoute.value.path"
@@ -66,8 +66,11 @@ const handleLogout = () => {
           </el-icon>
         </div>
         <div class="header-right">
+          <div class="avatar">
+            <span>{{ username.charAt(0).toUpperCase() }}</span>
+          </div>
           <span class="username">{{ username }}</span>
-          <el-button type="danger" link @click="handleLogout">退出</el-button>
+          <el-button type="danger" link @click="handleLogout" class="logout-btn">退出</el-button>
         </div>
       </el-header>
       
@@ -84,52 +87,87 @@ const handleLogout = () => {
 }
 
 .aside {
-  background-color: #304156;
-  transition: width 0.3s;
+  background: linear-gradient(180deg, #1a1a3e 0%, #0d0d2b 100%);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .logo {
-  height: 60px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 15px;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.logo-text {
+  color: #fff;
   font-size: 18px;
   font-weight: bold;
-  border-bottom: 1px solid #3a4a5c;
+  white-space: nowrap;
 }
 
 .menu {
   border-right: none;
-  background-color: #304156;
+  background: transparent;
+  padding: 10px 0;
 }
 
 :deep(.el-menu-item) {
-  color: #bfcbd9;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 4px 10px;
+  border-radius: 10px;
+  transition: all 0.3s;
 }
 
 :deep(.el-menu-item:hover) {
-  background-color: #263445;
-}
-
-:deep(.el-menu-item.is-active) {
-  background-color: #1890ff;
+  background: rgba(102, 126, 234, 0.2);
   color: #fff;
 }
 
+:deep(.el-menu-item.is-active) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
 .header {
-  background-color: #fff;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  padding: 0 20px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  padding: 0 25px;
 }
 
 .collapse-btn {
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
+  color: #303133;
+  transition: all 0.3s;
+}
+
+.collapse-btn:hover {
+  color: #667eea;
+  transform: scale(1.1);
 }
 
 .header-right {
@@ -138,13 +176,41 @@ const handleLogout = () => {
   gap: 15px;
 }
 
+.avatar {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  transition: transform 0.3s;
+}
+
+.avatar:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
 .username {
   font-size: 14px;
-  color: #606266;
+  color: #303133;
+  font-weight: 500;
+}
+
+.logout-btn {
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  transform: scale(1.05);
 }
 
 .main {
-  background-color: #f0f2f5;
-  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+  padding: 25px;
+  min-height: calc(100vh - 70px);
 }
 </style>
