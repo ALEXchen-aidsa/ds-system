@@ -76,6 +76,12 @@ const routes = [
         name: 'User',
         component: () => import('../views/User.vue'),
         meta: { title: '用户管理' }
+      },
+      {
+        path: 'log',
+        name: 'OperationLog',
+        component: () => import('../views/OperationLog.vue'),
+        meta: { title: '操作日志' }
       }
     ]
   }

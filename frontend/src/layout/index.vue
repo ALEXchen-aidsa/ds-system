@@ -17,7 +17,8 @@ const menuItems = [
   { path: '/customer', icon: 'UserFilled', title: '客户管理' },
   { path: '/order', icon: 'Document', title: '订单管理' },
   { path: '/seckill', icon: 'Timer', title: '秒杀活动' },
-  { path: '/user', icon: 'User', title: '用户管理' }
+  { path: '/user', icon: 'User', title: '用户管理' },
+  { path: '/log', icon: 'Notebook', title: '操作日志' }
 ]
 
 const toggleCollapse = () => {
