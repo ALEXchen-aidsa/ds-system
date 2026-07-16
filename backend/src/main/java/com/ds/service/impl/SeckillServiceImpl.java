@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -93,7 +94,8 @@ public class SeckillServiceImpl implements SeckillService {
         }
 
         String lockKey = SECKILL_LOCK_KEY + seckillProductId;
-        Boolean locked = redisTemplate.opsForValue().setIfAbsent(lockKey, "1", 10, TimeUnit.SECONDS);
+        String lockValue = UUID.randomUUID().toString();
+        Boolean locked = redisTemplate.opsForValue().setIfAbsent(lockKey, lockValue, 10, TimeUnit.SECONDS);
 
         try {
             stock = redisTemplate.opsForValue().decrement(stockKey);
@@ -115,7 +117,10 @@ public class SeckillServiceImpl implements SeckillService {
             return result;
         } finally {
             if (Boolean.TRUE.equals(locked)) {
-                redisTemplate.delete(lockKey);
+                String currentValue = (String) redisTemplate.opsForValue().get(lockKey);
+                if (lockValue.equals(currentValue)) {
+                    redisTemplate.delete(lockKey);
+                }
             }
         }
     }
