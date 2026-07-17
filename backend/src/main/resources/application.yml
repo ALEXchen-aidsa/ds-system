@@ -4,13 +4,18 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST:gateway01.ap-northeast-1.prod.aws.tidbcloud.com}:${DB_PORT:4000}/${DB_NAME:sys}?useSSL=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8&allowPublicKeyRetrieval=true&sslMode=VERIFY_IDENTITY&trustCertificateKeyStoreUrl=file:///app/certs/cacert.pem
-    username: ${DB_USERNAME:3yTdc4QGqF36Nuo.root}
-    password: ${DB_PASSWORD:cf1wUuxh4THgrxDA}
+    url: ${DB_URL:jdbc:mysql://localhost:3306/ds_system?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
 
   data:
     redis:
-      url: ${REDIS_URL:rediss://default:gQAAAAAAAqMdAAIgcDI3NDY4NzU1OWJiZTk0ZDkwYjJiZWRkOWRlMDEwNDI1MQ@known-sunbird-172829.upstash.io:6379}
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+      ssl:
+        enabled: ${REDIS_SSL:false}
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
