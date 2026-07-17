@@ -23,66 +23,12 @@
 - ✅ 操作日志（AOP自动记录）
 - ✅ Docker一键部署
 
-## 本地运行
-
-### 环境要求
-- JDK 17+
-- Node.js 18+
-- MySQL 8
-- Redis 7
-- Maven 3.8+
-
-### 后端启动
-```bash
-cd backend
-# 先执行建表脚本
-mysql -u root -p ds_system < src/main/resources/db/schema.sql
-mysql -u root -p ds_system < src/main/resources/db/warehouse.sql
-mysql -u root -p ds_system < src/main/resources/db/purchase.sql
-mysql -u root -p ds_system < src/main/resources/db/log.sql
-# 启动
-mvn spring-boot:run
-```
-
-### 前端启动
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### Docker启动
-```bash
-docker-compose up -d
-```
-
-## 访问地址
-
-- 前端: http://localhost:5173
-- 后端API文档: http://localhost:8080/doc.html
-
-### 测试账号
-- 管理员: admin / 123456
-- 测试用户: user1 / 123456
-
 ## 项目结构
 
 ```
 ds-system/
 ├── backend/                    # 后端SpringBoot项目
-│   ├── src/main/java/com/ds/
-│   │   ├── controller/         # 12个Controller（38个API接口）
-│   │   ├── service/            # 业务逻辑层
-│   │   ├── mapper/             # MyBatis-Plus Mapper
-│   │   ├── entity/             # 实体类
-│   │   ├── dto/                # 数据传输对象
-│   │   ├── config/             # 配置类（Security、Redis、CORS）
-│   │   ├── common/             # 通用类（LogAspect、Result）
-│   │   ├── security/           # JWT过滤器
-│   │   └── util/               # 工具类（JWT、Redis）
-│   └── src/main/resources/
-│       ├── db/                 # SQL建表脚本
-│       └── application.yml     # 配置文件
+│   └── src/main/java/com/ds/  # Controller/Service/Mapper/Entity
 ├── frontend/                   # 前端Vue3项目
 │   └── src/views/              # 页面组件
 ├── docker-compose.yml          # Docker编排文件
