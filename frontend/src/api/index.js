@@ -50,6 +50,16 @@ export function getOrderList(params) {
   return request.get('/order/list', { params })
 }
 
+// 获取订单商品明细
+export function getOrderItems(id) {
+  return request.get(`/order/${id}/items`)
+}
+
+// 修改订单状态
+export function updateOrderStatus(id, status) {
+  return request.put(`/order/${id}/status?status=${status}`)
+}
+
 // 获取统计数据
 export function getStatistics() {
   return request.get('/statistics')

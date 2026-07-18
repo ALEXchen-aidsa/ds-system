@@ -5,6 +5,7 @@ import com.ds.common.Result;
 import com.ds.dto.OrderDTO;
 import com.ds.dto.OrderQueryDTO;
 import com.ds.entity.Order;
+import com.ds.entity.OrderItem;
 import com.ds.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +13,10 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Tag(name = "订单管理", description = "订单相关接口")
 @RestController
@@ -42,5 +47,18 @@ public class OrderController {
     @GetMapping("/{id}")
     public Result<Order> getById(@PathVariable Long id) {
         return Result.success(orderService.getOrderById(id));
+    }
+
+    @Operation(summary = "获取订单商品明细")
+    @GetMapping("/{id}/items")
+    public Result<List<OrderItem>> getOrderItems(@PathVariable Long id) {
+        return Result.success(orderService.getOrderItems(id));
+    }
+
+    @Operation(summary = "修改订单状态")
+    @PutMapping("/{id}/status")
+    public Result<Void> updateStatus(@PathVariable Long id, @RequestParam Integer status) {
+        orderService.updateOrderStatus(id, status);
+        return Result.success();
     }
 }

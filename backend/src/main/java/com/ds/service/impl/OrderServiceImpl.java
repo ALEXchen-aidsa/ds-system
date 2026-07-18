@@ -124,6 +124,53 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
+    public void updateOrderStatus(Long id, Integer status) {
+        Order order = orderMapper.selectById(id);
+        if (order == null) {
+            throw new BusinessException("订单不存在");
+        }
+
+        Integer currentStatus = order.getStatus();
+        // 状态流转校验：0待支付→1已支付→2已发货→3已完成，0/1→4已取消
+        boolean valid = switch (status) {
+            case 1 -> currentStatus == 0;              // 待支付 → 已支付
+            case 2 -> currentStatus == 1;              // 已支付 → 已发货
+            case 3 -> currentStatus == 2;              // 已发货 → 已完成
+            case 4 -> currentStatus == 0 || currentStatus == 1; // 待支付/已支付 → 已取消
+            default -> false;
+        };
+        if (!valid) {
+            throw new BusinessException("订单状态不允许从" + statusLabel(currentStatus) + "变更为" + statusLabel(status));
+        }
+
+        order.setStatus(status);
+        if (status == 1) {
+            order.setPayTime(LocalDateTime.now());
+        }
+        orderMapper.updateById(order);
+        log.info("订单 {} 状态变更: {} -> {}", order.getOrderNo(), currentStatus, status);
+    }
+
+    @Override
+    public List<OrderItem> getOrderItems(Long orderId) {
+        return orderItemMapper.selectList(
+            new LambdaQueryWrapper<OrderItem>().eq(OrderItem::getOrderId, orderId)
+        );
+    }
+
+    private String statusLabel(Integer status) {
+        return switch (status) {
+            case 0 -> "待支付";
+            case 1 -> "已支付";
+            case 2 -> "已发货";
+            case 3 -> "已完成";
+            case 4 -> "已取消";
+            default -> "未知";
+        };
+    }
+
+    @Override
     @Scheduled(fixedRate = 60000)
     public void cancelExpiredOrders() {
         log.info("执行定时任务：取消超时订单");

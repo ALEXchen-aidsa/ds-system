@@ -88,7 +88,12 @@ public class SeckillServiceImpl implements SeckillService {
             stockObj = redisTemplate.opsForValue().get(stockKey);
         }
 
-        Long stock = (Long) stockObj;
+        Long stock;
+        if (stockObj instanceof Number) {
+            stock = ((Number) stockObj).longValue();
+        } else {
+            stock = Long.parseLong(stockObj.toString());
+        }
         if (stock <= 0) {
             throw new BusinessException("已售罄");
         }
