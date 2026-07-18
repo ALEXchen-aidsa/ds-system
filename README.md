@@ -2,14 +2,41 @@
 
 基于 SpringBoot3 + Vue3 的前后端分离电商/仓储管理系统。
 
+## 线上部署
+
+- **前端**: https://ds-system-xi.vercel.app
+- **后端API**: http://193.112.219.202:8080
+- **API文档**: http://193.112.219.202:8080/doc.html
+
+### 测试账号
+- 管理员: admin / 123456
+- 测试用户: user1 / 123456
+
 ## 技术栈
 
 - **后端**: Spring Boot 3.2.0 + MyBatis-Plus 3.5.5 + Spring Security + JWT + Spring AOP
 - **前端**: Vue 3 + Element Plus + Vite + ECharts
-- **数据库**: MySQL 8
-- **缓存**: Redis 7
+- **数据库**: MySQL 8 (TiDB Cloud)
+- **缓存**: Redis 7 (Upstash)
 - **接口文档**: Knife4j (OpenAPI 3.0)
-- **部署**: Docker + Docker Compose
+- **部署**: Docker + Vercel
+
+## 技术亮点（答辩可讲）
+
+| 技术点 | 说明 |
+|--------|------|
+| JWT 无状态认证 | 登录返回 token，后续请求携带 Bearer token |
+| BCrypt 密码加密 | 用户密码使用 BCrypt 不可逆加密存储 |
+| Redis 分布式锁 | 秒杀场景防止超卖 |
+| Redis 库存预扣 | 秒杀库存先扣 Redis 再扣数据库 |
+| 令牌桶限流 | RedisRateLimiter 实现接口限流 |
+| AOP 操作日志 | LogAspect 切面自动记录操作日志 |
+| MyBatis-Plus 分页 | 统一分页查询封装 |
+| 全局异常处理 | GlobalExceptionHandler 统一异常返回 |
+| CORS 跨域处理 | CorsConfig 允许跨域 |
+| Docker 容器化 | MySQL + Redis + 后端 + 前端四容器部署 |
+| ECharts 可视化 | 销售趋势、库存分布、订单状态图表 |
+| Vue3 组合式 API | 前端使用 Vue3 + Element Plus |
 
 ## 核心功能
 
@@ -56,14 +83,10 @@ npm run dev
 docker-compose up -d
 ```
 
-## 访问地址
+## 本地访问地址
 
 - 前端: http://localhost:5173
 - 后端API文档: http://localhost:8080/doc.html
-
-### 测试账号
-- 管理员: admin / 123456
-- 测试用户: user1 / 123456
 
 ## API文档
 
@@ -174,6 +197,10 @@ ds-system/
 ├── frontend/                   # 前端Vue3项目
 │   └── src/views/              # 页面组件
 ├── docker-compose.yml          # Docker编排文件
+├── checklist/                  # 考核提交材料
+│   ├── API接口文档.docx
+│   ├── 个人总结报告.docx
+│   └── 截图/
 ├── API接口文档.docx             # API接口文档（Word）
 ├── prompt_log.md               # AI辅助开发日志
 └── README.md                   # 项目文档
